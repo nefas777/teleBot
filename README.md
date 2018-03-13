@@ -1,1 +1,1 @@
-# teleBot
+Simple echo bot.
