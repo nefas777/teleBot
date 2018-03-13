@@ -4,9 +4,6 @@ Created on Mon Mar 12 09:43:12 2018
 
 @author: KR_NefedovAS
 """
-
-import sys
-sys.path.append(r'C:\Users\KR_NefedovAS\Desktop\Trash\telegBot\test1')
 import config
 import requests
 
