@@ -4,9 +4,26 @@ Created on Mon Mar 12 09:43:12 2018
 
 @author: KR_NefedovAS
 """
+
+import sys
+sys.path.append(r'C:\Users\KR_NefedovAS\Desktop\Trash\telegBot\test1')
 import config
 import requests
 
+headers = {'Authorization':'Bearer '+config.token_dialog}
+url = 'https://api.dialogflow.com/v1/'
+method = 'query'
+params = {'query':'Как дела', 'v':'20150910', 'lang':'ru', 'sessionId':'12345'}
+r = requests.get(url+method, params, headers=headers)
+
+def SmallTalk(token, query_string, sessionId):
+    headers = {'Authorization':'Bearer '+token}
+    url = 'https://api.dialogflow.com/v1/'
+    method = 'query'
+    params = {'query':query_string, 'v':'20150910', 'lang':'ru', 'sessionId':str(sessionId)}
+    r = requests.get(url+method, params, headers=headers)
+    return r.json()['result']['fulfillment']['speech']
+    
 class MyBot():
     def __init__(self, token):
         self.token = token
@@ -32,9 +49,10 @@ class MyBot():
             last_update = None
         return last_update
 
-bot = MyBot(config.token)
+bot = MyBot(config.token_telebot)
 def main():    
-    new_offset = bot.get_updates()[-1]['update_id']+1
+#    new_offset = bot.get_updates()[-1]['update_id']+1
+    new_offset = None
     while True:
         bot.get_updates(new_offset)
         last_update = bot.get_last_update()
@@ -42,7 +60,8 @@ def main():
             continue
         last_chat_id = last_update['message']['chat']['id']
         last_message = last_update['message']['text']
-        bot.send_message(last_chat_id, last_message)
+        answer = SmallTalk(config.token_dialog, last_message, '12345')
+        bot.send_message(last_chat_id, answer)
         new_offset = last_update['update_id']+1
 
 if __name__=='__main__':
